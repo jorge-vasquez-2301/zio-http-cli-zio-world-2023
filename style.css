@@ -1,0 +1,7 @@
+ul {
+    font-size: 1.5rem !important
+}
+
+strong {
+    @apply text-red-500 !important
+}
