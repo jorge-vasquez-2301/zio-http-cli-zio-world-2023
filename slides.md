@@ -71,14 +71,21 @@ layout: default
 
 # **Everything** is an **API**
 
-<v-clicks>
-
-- Most Scala-based backend applications are **web APIs**
-- They typically use:
-  - **HTTP** protocol
-  - **JSON** format
-
-</v-clicks>
+<div class="flex w-full h-3/5 items-center gap-5">
+  <div>
+    <ul>
+      <li v-click>Most Scala-based backend applications are <strong>web APIs</strong></li>
+      <li v-click>
+        <p>They typically use:</p>
+        <ul>
+          <li><strong>HTTP</strong> protocol</li>
+          <li><strong>JSON</strong> format</li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+  <div><img src="/apisEverywhere.jpg" class="h-60"/></div>
+</div>
 
 ---
 transition: slide-left
@@ -87,12 +94,15 @@ layout: default
 
 # **Testing** your APIs
 
-<v-clicks>
-
-- As a developer, it's **crucial** to **test your APIs** during development
-- Testing your APIs **from Scala** is easy with **ZIO HTTP**
-
-</v-clicks>
+<div class="flex w-full h-3/5 items-center gap-5">
+  <div>
+    <ul>
+      <li v-click>As a developer, it's <strong>crucial</strong> to <strong>test your APIs</strong> during development</li>
+      <li v-click>Testing your APIs <strong>from Scala</strong> is easy with <strong>ZIO HTTP</strong></li>
+    </ul>
+  </div>
+  <div><img src="/tooEasy.jpg"/></div>
+</div>
 
 ---
 transition: slide-left
@@ -161,7 +171,7 @@ class: "flex h-screen justify-end items-center text-right"
 
 <style>
 h1 {
-  @apply text-5xl !important
+  @apply text-3xl !important
 }
 </style>
 
@@ -172,12 +182,15 @@ layout: default
 
 # **Problem:** Calling your APIs from the command-line
 
-<v-clicks>
-
-- As developers, another option we have to test our APIs during development, is to call them from the **command-line**, using tools like `curl`
-- DevOps and SREs in your company may also need to call your APIs from **scripts**
-
-</v-clicks>
+<div class="flex w-full h-3/5 items-center gap-5">
+  <div>
+    <ul>
+      <li v-click>As developers, we can also test our APIs from the <strong>command-line</strong>, using tools like <code>curl</code></li>
+      <li v-click>DevOps and SREs in your company may also need to call your APIs from <strong>scripts</strong></li>
+    </ul>
+  </div>
+  <div><img src="/tooHard.jpg"/></div>
+</div>
 
 ---
 transition: slide-left
@@ -283,16 +296,19 @@ layout: default
 
 # **Conclusion**
 
-<v-clicks>
-
-- Using tools like `curl` is **hard**
-- Zero **discoverability**
-- Requires writing **headers**, **query params** and constructing **JSON** manually
-- **Time** consuming
-- **Error** prone
-- **Complex** error messages
-
-</v-clicks>
+<div class="flex w-full h-3/5 items-center gap-5">
+  <div>
+    <ul>
+      <li v-click>Using tools like <code>curl</code> is <strong>hard</strong></li>
+      <li v-click>Zero <strong>discoverability</strong></li>
+      <li v-click>Requires writing <strong>headers</strong>, <strong>query params</strong> and constructing <strong>JSON</strong> manually</li>
+      <li v-click><strong>Time</strong> consuming</li>
+      <li v-click><strong>Error</strong> prone</li>
+      <li v-click><strong>Complex</strong> error messages</li>
+    </ul>
+  </div>
+  <div><img src="/caseClosed.jpg"/></div>
+</div>
 
 ---
 transition: slide-left
