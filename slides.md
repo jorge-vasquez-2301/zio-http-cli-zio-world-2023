@@ -84,7 +84,7 @@ layout: default
       </li>
     </ul>
   </div>
-  <div><img src="/apisEverywhere.jpg" class="h-60"/></div>
+  <div v-click><img src="/apisEverywhere.jpg" class="h-60"/></div>
 </div>
 
 ---
@@ -101,7 +101,7 @@ layout: default
       <li v-click>Testing your APIs <strong>from Scala</strong> is easy with <strong>ZIO HTTP</strong></li>
     </ul>
   </div>
-  <div><img src="/tooEasy.jpg"/></div>
+  <div v-click><img src="/tooEasy.jpg"/></div>
 </div>
 
 ---
@@ -162,6 +162,15 @@ val clientExample: URIO[EndpointExecutor[Unit], Unit] =
 
 ---
 transition: slide-left
+layout: default
+---
+
+<div class="flex w-full h-full justify-center items-center">
+  <div><img src="/tooEasyDog.jpg" class="h-96"/></div>
+</div>
+
+---
+transition: slide-left
 layout: image
 image: /laptop.jpg
 class: "flex h-screen justify-end items-center text-right"
@@ -189,7 +198,7 @@ layout: default
       <li v-click>DevOps and SREs in your company may also need to call your APIs from <strong>scripts</strong></li>
     </ul>
   </div>
-  <div><img src="/tooHard.jpg"/></div>
+  <div v-click><img src="/rickEasy.jpg"/></div>
 </div>
 
 ---
@@ -307,7 +316,7 @@ layout: default
       <li v-click><strong>Complex</strong> error messages</li>
     </ul>
   </div>
-  <div><img src="/caseClosed.jpg"/></div>
+  <div v-click><img src="/caseClosed.jpg"/></div>
 </div>
 
 ---
