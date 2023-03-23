@@ -208,10 +208,22 @@ layout: default
 
 # **Example:** Get User by ID
 
-```bash {1|2|4|5-16|13|18|19}
+```bash {1|2}
 $ curl --request GET 'http://localhost:8080/users/1'
 # Got nothing 🤔
+```
+<div v-click class="flex w-full h-3/4 justify-center items-center">
+  <div><img src="/huh.jpeg" class="h-60"/></div>
+</div>
 
+---
+transition: slide-left
+layout: default
+---
+
+# **Example:** Get User by ID
+
+```bash {1|2-13|10}
 $ curl --request GET 'http://localhost:8080/users/1' --verbose
 # *   Trying 127.0.0.1:8080...
 # * Connected to localhost (127.0.0.1) port 8080 (#0)
@@ -225,10 +237,36 @@ $ curl --request GET 'http://localhost:8080/users/1' --verbose
 # < content-length: 0
 # < 
 # * Connection #0 to host localhost left intact
+```
+<div v-click class="flex w-full h-1/3 justify-center items-center">
+  <div><img src="/huh.jpeg" class="h-40"/></div>
+</div>
 
+---
+transition: slide-left
+layout: default
+---
+
+<div class="flex w-full h-full justify-center items-center">
+  <div><img src="/sheldonWhy.jpg" class="h-96"/></div>
+</div>
+
+---
+transition: slide-left
+layout: default
+---
+
+# **Example:** Get User by ID
+
+```bash {1|2|3}
+# It turns out we were missing a header!
 $ curl --request GET 'http://localhost:8080/users/1' --header 'location: some location'
 # {"id":1,"name":"Joseph","email":"joseph@test.com"}
 ```
+
+<div v-click class="flex w-full h-3/4 justify-center items-center">
+  <div><img src="/rockyVictory.jpg" class="h-60"/></div>
+</div>
 
 ---
 transition: slide-left
@@ -237,7 +275,7 @@ layout: default
 
 # **Example:** Get Posts by `userId` and `postId`
 
-```bash {1|2|4|5-16|13|18|19}
+```bash {1|2|4|5-16|13|18|19|20}
 $ curl --request GET 'http://localhost:8080/users/1/posts/1'
 # Got nothing 🤔
 
@@ -255,6 +293,7 @@ $ curl --request GET 'http://localhost:8080/users/1/posts/1' --verbose
 # < 
 # * Connection #0 to host localhost left intact
 
+# It turns out we were missing a query param!
 $ curl --request GET 'http://localhost:8080/users/1/posts/1?name=Luke'
 # [{"userId":1,"postId":1,"contents":"API2 RESULT parsed: users/1/posts/1?name=Luke"}]
 ```
@@ -266,7 +305,7 @@ layout: default
 
 # **Example:** Create a new User
 
-```bash {1-4|5|7-10|11-22|19|24-28|27|29} {maxHeight:'400px'}
+```bash {1-4|5|7-10|11-22|19|24|25-29|28|30} {maxHeight:'400px'}
 $ curl --request POST 'http://localhost:8080/users' --header 'Content-Type: application/json' --data-raw '{
     "id": 2,
     "name": "Test"
@@ -290,6 +329,7 @@ $ curl --request POST 'http://localhost:8080/users' --header 'Content-Type: appl
 # < 
 # * Connection #0 to host localhost left intact
 
+# It turns out we were missing a JSON field!
 $ curl --request POST 'http://localhost:8080/users' --header 'Content-Type: application/json' --data-raw '{
     "id": 2,
     "name": "Test",
@@ -352,7 +392,7 @@ h1 {
 ---
 transition: slide-left
 layout: image-right
-image: /computer.png
+image: /thanks.jpg
 ---
 
 # **Special Thanks**
