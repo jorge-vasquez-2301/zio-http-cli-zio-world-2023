@@ -1,7 +1,7 @@
 ---
 info: Slides for presentation at ZIO World 2023
 theme: 'default'
-presenter: true
+presenter: false
 download: false
 exportFilename: 'presentation'
 export:
@@ -111,9 +111,12 @@ layout: default
 
 # **Example:** Users API with **ZIO HTTP Endpoints**
 
-```scala {1|2-5|7-10|12|13-14|16|17-21|23|24-28} {maxHeight:'400px'}
+```scala {1-2|4|5-8|10-13|15|16-20|22|23-30|32|33-37} {maxHeight:'400px'}
+import zio.http.endpoint._
+import zio.schema._
+
 // Domain models
-final case class User(id: Int, name: String, email: String)
+final case class User(id: Int, name: String, email: Option[String])
 object User {
   implicit val schema = DeriveSchema.gen[User]
 }
@@ -125,21 +128,27 @@ object Post {
 
 // Endpoint to get a User by ID
 val getUser =
-  Endpoint.get("users" / int("userId")).header(HeaderCodec.location).out[User]
+  Endpoint
+    .get("users" / int("userId") ?? Doc.p("The unique identifier of the user"))
+    .header(HeaderCodec.location ?? Doc.p("The user's location"))
+    .out[User] ?? Doc.p("Get a user by ID")
 
 // Endpoint to get a User's posts by userId and postId
 val getUserPosts =
   Endpoint
-    .get("users" / int("userId") / "posts" / int("postId"))
-    .query(query("name"))
-    .out[List[Post]]
+    .get(
+      "users" / int("userId") ?? Doc.p("The unique identifier of the user") /
+        "posts" / int("postId") ?? Doc.p("The unique identifier of the post"),
+    )
+    .query(query("name") ?? Doc.p("The user's name"))
+    .out[List[Post]] ?? Doc.p("Get a user's posts by userId and postId")
 
 // Endpoint to create a new User
 val createUser =
   Endpoint
     .post("users")
     .in[User]
-    .out[String]
+    .out[String] ?? Doc.p("Create a new user")
 ```
 
 ---
@@ -154,9 +163,9 @@ val clientExample: URIO[EndpointExecutor[Unit], Unit] =
   for {
     executor <- ZIO.service[EndpointExecutor[Unit]] // Request an executor from the environment
     // Invoke your endpoints as normal functions, and execute them to ZIO effects
-    _        <- executor(getUser(42, Location.toLocation("some-location"))).debug("result1") 
+    _        <- executor(getUser(42, Location.parse("some-location").toOption.get)).debug("result1")
     _        <- executor(getUserPosts(42, 200, "adam")).debug("result2")
-    _        <- executor(createUser(User(2, "john", "john@test.com"))).debug("result3")
+    _        <- executor(createUser(User(2, "john", Some("john@test.com")))).debug("result3")
   } yield ()
 ```
 
@@ -305,7 +314,7 @@ layout: default
 
 # **Example:** Create a new User
 
-```bash {1-4|5|7-10|11-22|19|24|25-29|28|30} {maxHeight:'400px'}
+```bash {1-4|5|7-10|11-22|19|24|25-29|27|30} {maxHeight:'400px'}
 $ curl --request POST 'http://localhost:8080/users' --header 'Content-Type: application/json' --data-raw '{
     "id": 2,
     "name": "Test"
@@ -314,7 +323,7 @@ $ curl --request POST 'http://localhost:8080/users' --header 'Content-Type: appl
 
 $ curl --request POST 'http://localhost:8080/users' --header 'Content-Type: application/json' --data-raw '{
     "id": 2,
-    "name": "Test"
+    "email": "test@test.com"
 }' --verbose
 # *   Trying 127.0.0.1:8080...
 # * Connected to localhost (127.0.0.1) port 8080 (#0)
@@ -343,7 +352,7 @@ transition: slide-left
 layout: default
 ---
 
-# **Conclusion**
+# **Veredict**
 
 <div class="flex w-full h-3/5 items-center gap-5">
   <div>
@@ -361,18 +370,160 @@ layout: default
 
 ---
 transition: slide-left
-layout: image
-image: /laptop.jpg
-class: "flex h-screen justify-end items-center"
+layout: quote
+class: "flex h-screen justify-center items-center"
 ---
 
-# Solution
+# Can we do **better?**
 
 <style>
 h1 {
   @apply text-6xl !important
 }
 </style>
+
+---
+transition: slide-left
+layout: image
+image: /theater.jpg
+class: "flex h-screen justify-center items-center"
+---
+
+# Enter ZIO HTTP CLI!
+
+<style>
+h1 {
+  @apply text-6xl !important
+}
+</style>
+
+---
+transition: slide-left
+layout: default
+---
+
+# ZIO HTTP **CLI**
+
+<div class="flex w-full h-3/5 items-center gap-5">
+  <div>
+    <ul>
+      <li v-click>Now you can obtain a <code>CLI</code> for <strong>free</strong>, from the definition of your <code>Endpoints</code>!</li>
+      <li v-click>Just include <code>zio-http-cli</code> as a dependency in your project to start using it!</li>
+    </ul>
+  </div>
+  <div v-click><img src="/excellent.jpg"/></div>
+</div>
+
+---
+transition: slide-left
+layout: default
+---
+
+# **Example:** Obtaing a CLI for your Endpoints, using **ZIO HTTP CLI**
+
+```scala {1-2|4|5|6-8|10|11-20|12|19} {maxHeight:'350px'}
+import zio.http.endpoint._
+import zio.http.endpoint.cli._
+
+object TestCliApp extends zio.cli.ZIOCliDefault {
+  // We already have our Endpoints
+  val getUser = ...
+  val getUserPosts = ...
+  val createUser = ...
+
+  // Now we can obtain a `CliApp` from our Endpoints, for free!
+  val cliApp =
+    HttpCliApp.fromEndpoints(
+      name = "users-mgmt",
+      version = "0.0.1",
+      summary = "Users management CLI",
+      footer = "Copyright 2023",
+      host = "localhost",
+      port = 8080,
+      endpoints = Chunk(getUser, getUserPosts, createUser),
+    )
+}
+```
+
+---
+transition: slide-left
+layout: default
+---
+
+# Using the **CLI:** Nice **documentation**!
+
+```bash {1|2-17|11|12|13}
+$ users-mgmt --help
+#    __  __________  __________      ____ ___  ____ _____ ___  / /_
+#   / / / / ___/ _ \/ ___/ ___/_____/ __ `__ \/ __ `/ __ `__ \/ __/
+#  / /_/ (__  )  __/ /  (__  )_____/ / / / / / /_/ / / / / / / /_  
+#  \__,_/____/\___/_/  /____/     /_/ /_/ /_/\__, /_/ /_/ /_/\__/  
+#                                           /____/                 
+#  users-mgmt v0.0.1 -- Users management CLI
+#  USAGE
+#    $ users-mgmt <command>
+#  COMMANDS
+#    - get-users --userId integer --location text                     Get a user by ID 
+#    - create-users --id integer --name text [--email text]           Create a new user
+#    - get-users-posts --userId integer --postId integer --name text  Get a user's posts by userId and postId
+#    
+#  Copyright 2023
+```
+
+---
+transition: slide-left
+layout: default
+---
+
+# Using the **CLI:** Get User by ID
+
+```bash {1|2|3|5|6-8}
+$ users-mgmt get-users --userId 1
+# Expected to find --location option
+# (Now you don't have to guess anymore that you need a `location` header!)
+
+$ users-mgmt get-users --userId 1 --location test-location
+# Got response
+# Status: Ok
+# Body: {"id":1,"name":"Juanito","email":"juanito@test.com"}
+```
+
+---
+transition: slide-left
+layout: default
+---
+
+# Using the **CLI:** Get Posts by `userId` and `postId`
+
+```bash {1|2|3|5|6-8}
+$ users-mgmt get-users-posts --userId 1 --postId 100
+# Expected to find --name option
+# (Now you don't have to guess anymore that you need a `name` query param!)
+
+$ users-mgmt get-users-posts --userId 1 --postId 100 --name Pepito
+# Got response
+# Status: Ok
+# Body: [{"userId":1,"postId":100,"contents":"Pepito"}]
+```
+
+---
+transition: slide-left
+layout: default
+---
+
+# Using the **CLI:** Create a new User
+
+```bash {1|2|3|4|6|7-9}
+$ users-mgmt create-users --id 1 --email juanito@juan.test
+# Expected to find --name option
+# (Now you don't have to guess anymore that you need a `name` field for the JSON body!)
+# (Also, notice you don't have to manually build JSON anymore!)
+
+$ users-mgmt create-users --id 1 --name Juanito --email juanito@juan.test
+# Got response
+# Status: Ok
+# Body: "Juanito"
+```
 
 ---
 transition: slide-left
@@ -392,17 +543,75 @@ h1 {
 ---
 transition: slide-left
 layout: image-right
+image: /summary.jpg
+---
+
+# **Summary**
+
+<div class="flex w-full h-3/5 items-center gap-5">
+  <div>
+    <ul>
+      <li v-click>Calling your APIs with <code>curl</code> is <strong>terrible</strong></li>
+      <li v-click>On the other hand, ZIO HTTP now gives you CLI apps for your APIs, <strong>for free!</strong></li>
+    </ul>
+  </div>
+</div>
+
+---
+transition: slide-left
+layout: image-right
+image: /summary.jpg
+---
+
+# **Summary**
+
+<div class="flex w-full h-4/5 items-center gap-5">
+  <div>
+    <h3 v-click>You get all the <strong>nice features</strong> from ZIO CLI you know and love!</h3>
+    <ul>
+      <li v-click>Rich <strong>documentation</strong> pages</li>
+      <li v-click><strong>Discoverability</strong> of functionality</li>
+      <li v-click>Inputs <strong>validation</strong></li>
+      <li v-click><strong>Auto-completion</strong></li>
+      <li v-click><strong>Spelling correction</strong></li>
+    </ul>
+  </div>
+</div>
+
+---
+transition: slide-left
+layout: image-right
+image: /learn.jpg
+---
+
+# **To learn more...**
+
+<div class="flex w-full h-3/5 items-center gap-5">
+  <div>
+    <ul>
+      <li>Visit the <strong>ZIO HTTP</strong> <a href="https://github.com/zio/zio-http" target="_blank">GitHub repo</a></li>
+      <li>Visit the <strong>ZIO CLI</strong> <a href="https://github.com/zio/zio-cli" target="_blank">GitHub repo</a></li>
+      <li>Watch my <a href="https://www.youtube.com/watch?v=0c3zbUq4lQo" target="_blank">talk</a> about ZIO CLI presented at <strong>Functional Scala 2022</strong></li>
+    </ul>
+  </div>
+</div>
+
+---
+transition: slide-left
+layout: image-right
 image: /thanks.jpg
 ---
 
 # **Special Thanks**
 
-<v-clicks>
-
-* **Ziverge** for organizing this conference
-* **John De Goes** for guidance and support
-
-</v-clicks>
+<div class="flex w-full h-3/5 items-center gap-5">
+  <div>
+    <ul>
+      <li><strong>Ziverge</strong> for organizing this conference</li>
+      <li><strong>John De Goes</strong> for guidance and support</li>
+    </ul>
+  </div>
+</div>
 
 ---
 transition: slide-left
