@@ -567,7 +567,7 @@ image: /summary.jpg
 
 <div class="flex w-full h-4/5 items-center gap-5">
   <div>
-    <h3 v-click>You get all the <strong>nice features</strong> from ZIO CLI you know and love!</h3>
+    <h3 v-click>You can get advantage of all the <strong>nice features</strong> from ZIO CLI you know and love!</h3>
     <ul>
       <li v-click>Rich <strong>documentation</strong> pages</li>
       <li v-click><strong>Discoverability</strong> of functionality</li>
