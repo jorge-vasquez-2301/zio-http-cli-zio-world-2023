@@ -111,7 +111,7 @@ layout: default
 
 # **Example:** Users API with **ZIO HTTP Endpoints**
 
-```scala {1-2|4|5-8|10-13|15|16-20|22|23-30|32|33-37} {maxHeight:'400px'}
+```scala {1-2|4|5-8|10-13|15|16-20|18|19|20|22|23-30|25|26|27|29|30|32|33-37|35|36|37|39|40-43|45-48|50-53|55|57|58} {maxHeight:'400px'}
 import zio.http.endpoint._
 import zio.schema._
 
@@ -149,6 +149,27 @@ val createUser =
     .post("users")
     .in[User]
     .out[String] ?? Doc.p("Create a new user")
+
+// Routes
+val getUserRoute =
+  getUser.implement { case (id, _) =>
+    ZIO.succeed(User(id, "Juanito", Some("juanito@test.com")))
+  }
+
+val getUserPostsRoute =
+  getUserPosts.implement { case (userId, postId, name) =>
+    ZIO.succeed(List(Post(userId, postId, name)))
+  }
+
+val createUserRoute =
+  createUser.implement { user =>
+    ZIO.succeed(user.name)
+  }
+
+val routes = getUserRoute ++ getUserPostsRoute ++ createUserRoute
+
+// Running the server
+val run = Server.serve(routes.toApp).provide(Server.default)
 ```
 
 ---
@@ -421,7 +442,7 @@ layout: default
 
 # **Example:** Obtaing a CLI for your Endpoints, using **ZIO HTTP CLI**
 
-```scala {1-2|4|5|6-8|10|11-20|12|19} {maxHeight:'350px'}
+```scala {1-2|4|5|6-8|10|11-20|12|13|14|15|16|17|18|19} {maxHeight:'350px'}
 import zio.http.endpoint._
 import zio.http.endpoint.cli._
 
