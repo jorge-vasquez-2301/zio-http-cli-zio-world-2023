@@ -19,7 +19,7 @@ record: false
 colorSchema: 'dark'
 aspectRatio: '16/9'
 canvasWidth: 980
-favicon: 'https://cdn.jsdelivr.net/gh/slidevjs/slidev/assets/favicon.png'
+favicon: 'zioWorldLogo.png'
 drawings:
   enabled: false
   persist: false
