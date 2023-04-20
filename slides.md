@@ -33,7 +33,11 @@ class: 'text-right'
 
 ### Teach Your Web API to Speak Loud and Clear CLI!
 
-ZIO World - April 2023
+April 2023
+
+<div class="absolute top-0 right-0">
+  <img src="/zioWorldLogo2.png" class="h-40" />
+</div>
 
 ---
 transition: slide-left
